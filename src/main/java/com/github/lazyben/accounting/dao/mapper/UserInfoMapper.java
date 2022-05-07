@@ -1,6 +1,6 @@
 package com.github.lazyben.accounting.dao.mapper;
 
-import com.github.lazyben.accounting.model.service.UserInfo;
+import com.github.lazyben.accounting.model.persistence.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
