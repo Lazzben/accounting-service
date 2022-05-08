@@ -2,7 +2,9 @@ package com.github.lazyben.accounting.converter.p2c;
 
 import com.github.lazyben.accounting.model.persistence.UserInfo;
 import com.google.common.base.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserInfoP2CConverter extends Converter<UserInfo, com.github.lazyben.accounting.model.common.UserInfo> {
     @Override
     protected com.github.lazyben.accounting.model.common.UserInfo doForward(UserInfo userInfo) {
