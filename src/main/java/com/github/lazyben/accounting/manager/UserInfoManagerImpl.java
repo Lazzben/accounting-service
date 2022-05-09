@@ -3,7 +3,7 @@ package com.github.lazyben.accounting.manager;
 import com.github.lazyben.accounting.converter.p2c.UserInfoP2CConverter;
 import com.github.lazyben.accounting.dao.mapper.UserInfoMapper;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
-import com.github.lazyben.accounting.manager.model.common.UserInfo;
+import com.github.lazyben.accounting.model.common.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

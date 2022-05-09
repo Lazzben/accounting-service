@@ -5,7 +5,7 @@ import com.github.lazyben.accounting.converter.c2s.UserInfoC2SConverter;
 import com.github.lazyben.accounting.exception.GlobalExceptionHandler;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
 import com.github.lazyben.accounting.manager.UserInfoManager;
-import com.github.lazyben.accounting.manager.model.service.UserInfo;
+import com.github.lazyben.accounting.model.service.UserInfo;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class UserInfoControllerTest {
         val userid = 1L;
         val username = "lazyben";
         val password = "lazyben";
-        val userInfoCommon = com.github.lazyben.accounting.manager.model.common.UserInfo.builder()
+        val userInfoCommon = com.github.lazyben.accounting.model.common.UserInfo.builder()
                 .id(userid)
                 .username(username)
                 .password(password)
