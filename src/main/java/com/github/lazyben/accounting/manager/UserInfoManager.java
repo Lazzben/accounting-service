@@ -5,4 +5,6 @@ import com.github.lazyben.accounting.model.common.UserInfo;
 
 public interface UserInfoManager {
     UserInfo getUserInfoById(long id) throws ServiceException;
+
+    String login(String username, String password);
 }
