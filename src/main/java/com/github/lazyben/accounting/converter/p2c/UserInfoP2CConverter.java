@@ -13,6 +13,7 @@ public class UserInfoP2CConverter extends Converter<UserInfo, com.github.lazyben
         return com.github.lazyben.accounting.model.common.UserInfo.builder()
                 .username(userInfo.getUsername())
                 .password(userInfo.getPassword())
+                .salt(userInfo.getSalt())
                 .id(userInfo.getId())
                 .build();
     }
