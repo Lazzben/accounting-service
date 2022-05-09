@@ -23,7 +23,7 @@ public class UserInfoManagerImpl implements UserInfoManager {
         this.userInfoP2CConverter = userInfoP2CConverter;
     }
 
-    public UserInfo getUserInfoById(long id) throws ResourceNotFoundException {
+    public UserInfo getUserInfoById(long id) {
         return Optional.ofNullable(userInfoMapper.getUserInfoById(id))
                 .map(userInfoP2CConverter::convert)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("User %s was not found", id)));
@@ -38,5 +38,12 @@ public class UserInfoManagerImpl implements UserInfoManager {
         // login
         subject.login(token);
         return "success";
+    }
+
+    @Override
+    public UserInfo getUserInfoByUsername(String username) {
+        return Optional.ofNullable(userInfoMapper.getUserInfoByUsername(username))
+                .map(userInfoP2CConverter::convert)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("User name %s was not found", username)));
     }
 }
