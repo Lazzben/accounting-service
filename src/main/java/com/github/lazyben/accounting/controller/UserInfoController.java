@@ -4,7 +4,7 @@ import com.github.lazyben.accounting.converter.c2s.UserInfoC2SConverter;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.exception.ServiceException;
 import com.github.lazyben.accounting.manager.UserInfoManager;
-import com.github.lazyben.accounting.model.service.UserInfo;
+import com.github.lazyben.accounting.manager.model.service.UserInfo;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -4,7 +4,7 @@ import com.github.lazyben.accounting.converter.p2c.UserInfoP2CConverter;
 import com.github.lazyben.accounting.dao.mapper.UserInfoMapper;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
 import com.github.lazyben.accounting.exception.ServiceException;
-import com.github.lazyben.accounting.model.persistence.UserInfo;
+import com.github.lazyben.accounting.manager.model.persistence.UserInfo;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

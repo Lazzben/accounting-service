@@ -1,9 +1,11 @@
-package com.github.lazyben.accounting.model.service;
+package com.github.lazyben.accounting.manager.model.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -12,4 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
     private Long id;
     private String username;
+    private String password;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }

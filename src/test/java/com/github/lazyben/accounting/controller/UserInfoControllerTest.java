@@ -5,7 +5,7 @@ import com.github.lazyben.accounting.converter.c2s.UserInfoC2SConverter;
 import com.github.lazyben.accounting.exception.GlobalExceptionHandler;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
 import com.github.lazyben.accounting.manager.UserInfoManager;
-import com.github.lazyben.accounting.model.common.UserInfo;
+import com.github.lazyben.accounting.manager.model.service.UserInfo;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,12 +41,12 @@ public class UserInfoControllerTest {
         val userid = 1L;
         val username = "lazyben";
         val password = "lazyben";
-        val userInfoCommon = UserInfo.builder()
+        val userInfoCommon = com.github.lazyben.accounting.manager.model.common.UserInfo.builder()
                 .id(userid)
                 .username(username)
                 .password(password)
                 .build();
-        val userInfoService = com.github.lazyben.accounting.model.service.UserInfo.builder()
+        val userInfoService = UserInfo.builder()
                 .id(userid)
                 .username(username)
                 .build();
@@ -68,7 +68,7 @@ public class UserInfoControllerTest {
         // act && assert
         mockMvc.perform(get("/v1.0/userinfo/" + userid).contentType("application/json"))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().string("{\"message\":\"User id -1 is invalid\",\"bizErrorCode\":\"INVALID_PARAMETER\"}"));
+                .andExpect(content().string("{\"bizErrorCode\":\"INVALID_PARAMETER\",\"message\":\"User id -1 is invalid\"}"));
     }
 
     @Test
@@ -81,6 +81,6 @@ public class UserInfoControllerTest {
         // act && assert
         mockMvc.perform(get("/v1.0/userinfo/" + userid).contentType("application/json"))
                 .andExpect(status().is4xxClientError())
-                .andExpect(content().string("{\"message\":\"User 100 was not found\",\"bizErrorCode\":\"RESOURCE_NOT_FOUND\"}"));
+                .andExpect(content().string("{\"bizErrorCode\":\"RESOURCE_NOT_FOUND\",\"message\":\"User 100 was not found\"}"));
     }
 }

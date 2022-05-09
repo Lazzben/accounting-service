@@ -1,22 +1,24 @@
 package com.github.lazyben.accounting.converter.c2s;
 
-import com.github.lazyben.accounting.model.common.UserInfo;
+import com.github.lazyben.accounting.manager.model.service.UserInfo;
 import com.google.common.base.Converter;
+import lombok.EqualsAndHashCode;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserInfoC2SConverter extends Converter<UserInfo, com.github.lazyben.accounting.model.service.UserInfo> {
+@EqualsAndHashCode(callSuper = true)
+public class UserInfoC2SConverter extends Converter<com.github.lazyben.accounting.manager.model.common.UserInfo, UserInfo> {
     @Override
-    protected com.github.lazyben.accounting.model.service.UserInfo doForward(UserInfo userInfo) {
-        return com.github.lazyben.accounting.model.service.UserInfo.builder()
+    protected UserInfo doForward(com.github.lazyben.accounting.manager.model.common.UserInfo userInfo) {
+        return UserInfo.builder()
                 .username(userInfo.getUsername())
                 .id(userInfo.getId())
                 .build();
     }
 
     @Override
-    protected UserInfo doBackward(com.github.lazyben.accounting.model.service.UserInfo userInfo) {
-        return UserInfo.builder()
+    protected com.github.lazyben.accounting.manager.model.common.UserInfo doBackward(UserInfo userInfo) {
+        return com.github.lazyben.accounting.manager.model.common.UserInfo.builder()
                 .username(userInfo.getUsername())
                 .id(userInfo.getId())
                 .password(null)

@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handelException(ServiceException e) {
         return ResponseEntity.status(e.getStatusCode())
                 .body(ErrorResponse.builder()
-                        .BizErrorCode(e.getBizErrorCode())
+                        .bizErrorCode(e.getBizErrorCode())
                         .message(e.getMessage())
                         .build());
     }
