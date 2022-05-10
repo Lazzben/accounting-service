@@ -1,6 +1,9 @@
 package com.github.lazyben.accounting.config;
 
 import com.github.lazyben.accounting.manager.UserInfoManagerImpl;
+import com.github.lazyben.accounting.shiro.CustomFormAuthenticationFilter;
+import com.github.lazyben.accounting.shiro.CustomHttpFilter;
+import com.github.lazyben.accounting.shiro.CustomShiroFilterFactoryBean;
 import lombok.val;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -26,13 +29,19 @@ public class ShiroConfig {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
-        val shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        val shiroFilterFactoryBean = new CustomShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
+        val filters = shiroFilterFactoryBean.getFilters();
+        filters.put("custom", new CustomHttpFilter());
+        filters.put("authc", new CustomFormAuthenticationFilter());
 
         val filterChainDefinitionMap = new LinkedHashMap<String, String>();
-        filterChainDefinitionMap.put("/v1.0/userinfo", "anon");
+
         filterChainDefinitionMap.put("/v1.0/session", "anon");
+        filterChainDefinitionMap.put("/v1.0/userinfo/**::POST", "custom");
+
         filterChainDefinitionMap.put("/**", "authc");
+
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
