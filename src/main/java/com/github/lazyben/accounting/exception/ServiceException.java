@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ServiceException extends RuntimeException {
-    private String BizErrorCode;
+    private BizErrorCode BizErrorCode;
     private int statusCode;
 
     public ServiceException(String message) {

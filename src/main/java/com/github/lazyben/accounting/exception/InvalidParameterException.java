@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public class InvalidParameterException extends ServiceException {
     public InvalidParameterException(String message) {
         super(message);
-        this.setBizErrorCode("INVALID_PARAMETER");
+        this.setBizErrorCode(BizErrorCode.INVALID_PARAMETER);
         this.setStatusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

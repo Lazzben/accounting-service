@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handelException(IncorrectCredentialsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
                 .body(ErrorResponse.builder()
-                        .bizErrorCode("INCORRECT_PASSWORD")
+                        .bizErrorCode(BizErrorCode.INCORRECT_PASSWORD)
                         .message(e.getMessage())
                         .build());
     }
