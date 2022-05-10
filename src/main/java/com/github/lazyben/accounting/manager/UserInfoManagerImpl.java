@@ -5,7 +5,7 @@ import com.github.lazyben.accounting.dao.mapper.UserInfoMapper;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
 import com.github.lazyben.accounting.model.common.UserInfo;
-import com.sun.org.apache.xml.internal.security.algorithms.implementations.SignatureDSA;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserInfoManagerImpl implements UserInfoManager {
     public static final int HASH_ITERATIONS = 1000;
     private final UserInfoMapper userInfoMapper;

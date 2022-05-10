@@ -1,11 +1,9 @@
 package com.github.lazyben.accounting.controller;
 
 import com.github.lazyben.accounting.manager.UserInfoManager;
+import com.github.lazyben.accounting.model.common.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("v1.0/session")
@@ -17,9 +15,8 @@ public class SessionController {
         this.userInfoManager = userInfoManager;
     }
 
-    @PostMapping
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password) {
-        return userInfoManager.login(username, password);
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public String login(@RequestBody UserInfo userInfo) {
+        return userInfoManager.login(userInfo.getUsername(), userInfo.getPassword());
     }
 }

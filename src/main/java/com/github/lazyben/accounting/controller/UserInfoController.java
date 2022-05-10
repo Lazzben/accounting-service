@@ -2,7 +2,6 @@ package com.github.lazyben.accounting.controller;
 
 import com.github.lazyben.accounting.converter.c2s.UserInfoC2SConverter;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
-import com.github.lazyben.accounting.exception.ServiceException;
 import com.github.lazyben.accounting.manager.UserInfoManager;
 import com.github.lazyben.accounting.model.service.UserInfo;
 import lombok.val;
@@ -21,8 +20,8 @@ public class UserInfoController {
         this.userInfoC2SConverter = userInfoC2SConverter;
     }
 
-    @GetMapping("/{id}")
-    public UserInfo getUserInfoById(@PathVariable("id") long id) throws ServiceException {
+    @GetMapping(path = "/{id}", produces = "application/json")
+    public UserInfo getUserInfoById(@PathVariable("id") long id) {
         // 参数校验
         if (id <= 0) {
             throw new InvalidParameterException(String.format("User id %s is invalid", id));
@@ -31,10 +30,9 @@ public class UserInfoController {
         return userInfoC2SConverter.convert(userInfo);
     }
 
-    @PostMapping
-    public UserInfo register(@RequestParam("username") String username,
-                             @RequestParam("password") String password) {
-        val userInfo = userInfoManager.register(username, password);
-        return userInfoC2SConverter.convert(userInfo);
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public UserInfo register(@RequestBody com.github.lazyben.accounting.model.common.UserInfo userInfo) {
+        val newUserInfo = userInfoManager.register(userInfo.getUsername(), userInfo.getPassword());
+        return userInfoC2SConverter.convert(newUserInfo);
     }
 }
