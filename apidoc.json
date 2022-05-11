@@ -1,0 +1,6 @@
+{
+  "name": "Accounting Service",
+  "description": "记账服务",
+  "title": "小黄记账",
+  "url" : "https://localhost:8080/v1.0"
+}

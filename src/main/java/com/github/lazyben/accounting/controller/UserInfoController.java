@@ -20,6 +20,26 @@ public class UserInfoController {
         this.userInfoC2SConverter = userInfoC2SConverter;
     }
 
+    /**
+     * @api {get} /userinfo/:id 获取用户
+     * @apiName Get user by id
+     * @apiGroup 用户
+     * @apiHeader {String} Accept application/json
+     * @apiHeader {String} Content-Type application/json
+     * @apiParam {Long} id 用户id
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     * "id": 1,
+     * "username": "lazyben"
+     * }
+     * @apiError 404 Not Found 用户不存在
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "RESOURCE_NOT_FOUND",
+     * "message": "Username xxx was not found"
+     * }
+     */
     @GetMapping(path = "/{id}", produces = "application/json")
     public UserInfo getUserInfoById(@PathVariable("id") long id) {
         // 参数校验
@@ -30,6 +50,31 @@ public class UserInfoController {
         return userInfoC2SConverter.convert(userInfo);
     }
 
+    /**
+     * @api {post} /userinfo 注册
+     * @apiName Register
+     * @apiGroup 用户
+     * @apiHeader {String} Accept application/json
+     * @apiHeader {String} Content-Type application/json
+     * @apiBody {String} username 用户名
+     * @apiBody {String} password 密码
+     * @apiParamExample {json} Request-Example:
+     * {
+     * "username": "lazyben",
+     * "password": "lazyben"
+     * }
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     * "id": 1,
+     * "username": "lazyben"
+     * }
+     * @apiError 400 Bad Request 用户已经存在
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "INVALID_PARAMETER",
+     * "message": "Username lazyben already exists"
+     * }
+     */
     @PostMapping(consumes = "application/json", produces = "application/json")
     public UserInfo register(@RequestBody com.github.lazyben.accounting.model.common.UserInfo userInfo) {
         val newUserInfo = userInfoManager.register(userInfo.getUsername(), userInfo.getPassword());
