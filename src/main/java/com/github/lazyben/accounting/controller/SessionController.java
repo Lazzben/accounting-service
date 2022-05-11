@@ -18,7 +18,7 @@ public class SessionController {
     /**
      * @api {post} /session 登录
      * @apiName Login
-     * @apiGroup 用户
+     * @apiGroup User
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
      * @apiBody {String} username 用户名

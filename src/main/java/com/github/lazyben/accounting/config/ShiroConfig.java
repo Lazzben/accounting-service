@@ -39,6 +39,8 @@ public class ShiroConfig {
 
         filterChainDefinitionMap.put("/v1.0/session", "anon");
         filterChainDefinitionMap.put("/v1.0/userinfo/**::POST", "custom");
+        filterChainDefinitionMap.put("/v1.0/tag/**::POST", "custom");
+        filterChainDefinitionMap.put("/v1.0/tag/**::PUT", "custom");
 
         filterChainDefinitionMap.put("/**", "authc");
 

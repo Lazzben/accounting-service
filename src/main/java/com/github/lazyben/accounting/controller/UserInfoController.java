@@ -23,7 +23,7 @@ public class UserInfoController {
     /**
      * @api {get} /userinfo/:id 获取用户
      * @apiName Get user by id
-     * @apiGroup 用户
+     * @apiGroup User
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
      * @apiParam {Long} id 用户id
@@ -53,7 +53,7 @@ public class UserInfoController {
     /**
      * @api {post} /userinfo 注册
      * @apiName Register
-     * @apiGroup 用户
+     * @apiGroup User
      * @apiHeader {String} Accept application/json
      * @apiHeader {String} Content-Type application/json
      * @apiBody {String} username 用户名

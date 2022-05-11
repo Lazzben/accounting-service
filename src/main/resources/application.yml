@@ -4,3 +4,7 @@ spring:
     username: root
     password: bigben
     driverClassName: com.mysql.cj.jdbc.Driver
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
