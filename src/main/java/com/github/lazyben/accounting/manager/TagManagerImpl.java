@@ -68,16 +68,12 @@ public class TagManagerImpl implements TagManager {
     public Tag getTagById(Long id) {
         return Optional.ofNullable(tagMapper.getTagById(id))
                 .map(tagP2CConverter::convert)
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("tag %s not found", id)));
     }
 
     @Override
     public Tag updateTag(Long tagId, com.github.lazyben.accounting.model.service.Tag tagTobeUpdated) {
         val tag = getTagById(tagId);
-        // 检测该tagId是否对应有tag
-        if (tag == null) {
-            throw new ResourceNotFoundException(String.format("tag %s not found", tagId));
-        }
         // 检测该tag是否属于指定的用户
         if (!tag.getUserId().equals(tagTobeUpdated.getUserId())) {
             throw new InvalidParameterException(String.format("tag %s doesn't belong to user id %s", tagId, tagTobeUpdated.getUserId()));

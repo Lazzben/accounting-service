@@ -3,7 +3,6 @@ package com.github.lazyben.accounting.controller;
 import com.github.lazyben.accounting.converter.c2s.TagC2SConverter;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.manager.TagManager;
-import com.github.lazyben.accounting.model.Status;
 import com.github.lazyben.accounting.model.service.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -97,5 +96,35 @@ public class TagController {
             throw new InvalidParameterException("The userId is empty or invalid");
         }
         return tagC2SConverter.convert(tagManager.updateTag(tagId, tag));
+    }
+
+    /**
+     * @api {get} /tag/:id 获取标签
+     * @apiGroup Tag
+     * @apiName getTagById
+     * @apiHeader {String} Content-Type application/json
+     * @apiParam {Long} id 标签id
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "house"
+     * }
+     * @apiError 400 Bad Request tagId为空或非法
+     * @apiError 404 Not Found 该id的标签不存在
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "RESOURCE_NOT_FOUND",
+     * "message": "tag 5 not found"
+     * }
+     */
+    @GetMapping(path = "/{id}", produces = "application/json")
+    public Tag getTagByTagId(@PathVariable("id") Long tagId) {
+        if (tagId == null || tagId <= 0) {
+            throw new InvalidParameterException("The tagId is empty or invalid");
+        }
+        return tagC2SConverter.convert(tagManager.getTagById(tagId));
     }
 }
