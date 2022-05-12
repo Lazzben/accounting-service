@@ -34,4 +34,9 @@ public class RecordTagMappingDaoImpl implements RecordTagMappingDao {
 
         recordTagMappingMapper.batchInsertRecordTagMapping(recordTagMappings);
     }
+
+    @Override
+    public List<Tag> getTagsByRecordId(Long recordId) {
+        return recordTagMappingMapper.getTagsByRecordId(recordId);
+    }
 }

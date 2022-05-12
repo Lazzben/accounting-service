@@ -26,4 +26,9 @@ public class RecordDaoImpl implements RecordDao {
         log.debug("create Record {}", record);
     }
 
+    @Override
+    public Record getRecordByRecordId(Long recordId) {
+        return recordMapper.getRecordByRecordId(recordId);
+    }
+
 }

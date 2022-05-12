@@ -72,8 +72,8 @@ public class RecordController {
      * @apiError 401 Unauthorized 用户未登录
      * @apiErrorExample {json} Error-Response:
      * {
-     * "bizErrorCode": "RESOURCE_NOT_FOUND",
-     * "message": "Username xxx was not found"
+     * "bizErrorCode": "INVALID_PARAMETER",
+     * "message": "Category is null or invalid"
      * }
      */
     @PostMapping(produces = "application/json", consumes = "application/json")
@@ -83,9 +83,49 @@ public class RecordController {
         return recordC2SConverter.convert(recordManager.createRecord(recordCommon));
     }
 
-    @GetMapping(path = "/{id}", produces = "application/json", consumes = "application/json")
+    /**
+     * @api {get} /record/:id 查询记录
+     * @apiName getRecordById
+     * @apiGroup Record
+     * @apiHeader {String} Content-Type application/json
+     * @apiParam {Long} id 记录id
+     * @apiSuccessExample Success-Response:
+     * {
+     * "id": 2,
+     * "userId": 1,
+     * "amount": 64.50,
+     * "note": "买衣服和买书",
+     * "category": "outcome",
+     * "tags": [
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "shopping"
+     * },
+     * {
+     * "id": 3,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "read"
+     * }
+     * ]
+     * }
+     * @apiError 400 Bad Request recordId为空或非法
+     * @apiError 404 Not Found 记录不存在
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "RESOURCE_NOT_FOUND",
+     * "message": "record 5 is not found"
+     * }
+     */
+    @GetMapping(path = "/{id}", produces = "application/json")
     public Record getRecordByRecordId(@PathVariable("id") Long recordId) {
-        return null;
+        if (recordId == null || recordId <= 0) {
+            throw new InvalidParameterException("recordId is null or invalid");
+        }
+        return recordC2SConverter.convert(recordManager.getRecordByRecordId(recordId));
     }
 
     @PutMapping(path = "/{id}", produces = "application/json", consumes = "application/json")
