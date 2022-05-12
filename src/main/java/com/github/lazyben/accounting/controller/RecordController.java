@@ -20,6 +20,62 @@ public class RecordController {
         this.recordC2SConverter = recordC2SConverter;
     }
 
+    /**
+     * @api {post} /record 创建记录
+     * @apiName createRecord
+     * @apiGroup Record
+     * @apiHeader {String} Accept application/json
+     * @apiHeader {String} Content-Type application/json
+     * @apiBody {Long} userId 用户id
+     * @apiBody {BigDecimal} amount 金额
+     * @apiBody {String} category 支出或收入
+     * @apiBody {String} [note] 备注
+     * @apiBody {List} tags 标签
+     * @apiParamExample {json} Request-Example:
+     * {
+     * "userId": 1,
+     * "amount": 64.50,
+     * "note" : "买衣服和买书",
+     * "category": "outcome",
+     * "tags":[
+     * {
+     * "id": 1
+     * },
+     * {
+     * "id": 3
+     * }
+     * ]
+     * }
+     * @apiSuccessExample Success-Response:
+     * {
+     * "id": 2,
+     * "userId": 1,
+     * "amount": 64.50,
+     * "note": "买衣服和买书",
+     * "category": "outcome",
+     * "tags": [
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "shopping"
+     * },
+     * {
+     * "id": 3,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "read"
+     * }
+     * ]
+     * }
+     * @apiError 400 Bad Request userId为空或非法，tags为空或非法，amount为空或非法，category为空或非法
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "RESOURCE_NOT_FOUND",
+     * "message": "Username xxx was not found"
+     * }
+     */
     @PostMapping(produces = "application/json", consumes = "application/json")
     public Record createRecord(@RequestBody Record record) {
         checkRecord(record);

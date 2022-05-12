@@ -40,6 +40,7 @@ public class RecordManagerImpl implements RecordManager {
         // create new record
         recordDao.createRecord(newRecord);
         recordTagMappingDao.batchInsertRecordTagMapping(tags, newRecord.getId());
+        newRecord.setTags(tags);
         return recordP2CConverter.convert(newRecord);
     }
 
