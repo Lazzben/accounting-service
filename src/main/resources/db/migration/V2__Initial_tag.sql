@@ -7,3 +7,7 @@ create TABLE `tag` (
 	`update_time` datetime DEFAULT NULL ON update CURRENT_TIMESTAMP,
 	PRIMARY KEY `pk_id` (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into `tag` (user_id, description, status, create_time) values (1, 'shopping', 'ENABLE', now());
+insert into `tag` (user_id, description, status, create_time) values (1, 'house', 'ENABLE', now());
+insert into `tag` (user_id, description, status, create_time) values (1, 'read', 'ENABLE', now());

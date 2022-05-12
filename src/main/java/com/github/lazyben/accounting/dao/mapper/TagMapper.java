@@ -1,7 +1,10 @@
 package com.github.lazyben.accounting.dao.mapper;
 
+import com.github.lazyben.accounting.dao.provider.TagSqlProvider;
 import com.github.lazyben.accounting.model.persistence.Tag;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface TagMapper {
@@ -20,4 +23,7 @@ public interface TagMapper {
 
     @Update("UPDATE tag set description=#{description}, status=#{status} where id=#{id}")
     void updateTag(com.github.lazyben.accounting.model.common.Tag tag);
+
+    @SelectProvider(type = TagSqlProvider.class, method = "getTagListByIds")
+    List<Tag> getTagListByTagIds(List<Long> ids);
 }

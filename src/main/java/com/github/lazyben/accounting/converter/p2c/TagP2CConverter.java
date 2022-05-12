@@ -18,6 +18,13 @@ public class TagP2CConverter extends Converter<Tag, com.github.lazyben.accountin
 
     @Override
     protected Tag doBackward(com.github.lazyben.accounting.model.common.Tag tag) {
-        return null;
+        return Tag.builder()
+                .id(tag.getId())
+                .userId(tag.getUserId())
+                .description(tag.getDescription())
+                .status(tag.getStatus())
+                .createTime(null)
+                .updateTime(null)
+                .build();
     }
 }

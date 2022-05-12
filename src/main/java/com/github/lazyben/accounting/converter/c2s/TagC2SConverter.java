@@ -19,6 +19,11 @@ public class TagC2SConverter extends Converter<Tag, com.github.lazyben.accountin
 
     @Override
     protected Tag doBackward(com.github.lazyben.accounting.model.service.Tag tag) {
-        return null;
+        return Tag.builder()
+                .id(tag.getId())
+                .userId(tag.getUserId())
+                .description(tag.getDescription())
+                .status(tag.getStatus())
+                .build();
     }
 }
