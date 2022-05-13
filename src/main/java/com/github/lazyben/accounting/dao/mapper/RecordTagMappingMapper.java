@@ -2,10 +2,7 @@ package com.github.lazyben.accounting.dao.mapper;
 
 import com.github.lazyben.accounting.model.persistence.RecordTagMapping;
 import com.github.lazyben.accounting.model.persistence.Tag;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -26,6 +23,9 @@ public interface RecordTagMappingMapper {
             "from tag t " +
             "left join record_tag_mapping r " +
             "on r.tag_id = t.id " +
-            "where r.record_id = #{recordId}")
+            "where r.record_id = #{recordId} and r.status=1")
     List<Tag> getTagsByRecordId(Long recordId);
+
+    @Update("UPDATE record_tag_mapping SET status=0 where record_id=#{recordId} and status=1")
+    void batchDeleteRecordTagMapping(Long recordId);
 }

@@ -6,4 +6,6 @@ public interface RecordDao {
     void createRecord(Record record);
 
     Record getRecordByRecordId(Long recordId);
+
+    void updateRecord(Record record);
 }

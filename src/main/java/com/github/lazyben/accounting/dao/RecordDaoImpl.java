@@ -31,4 +31,9 @@ public class RecordDaoImpl implements RecordDao {
         return recordMapper.getRecordByRecordId(recordId);
     }
 
+    @Override
+    public void updateRecord(Record record) {
+        recordMapper.updateRecord(record);
+    }
+
 }

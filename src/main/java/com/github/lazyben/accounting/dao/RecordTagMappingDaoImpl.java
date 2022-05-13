@@ -36,6 +36,11 @@ public class RecordTagMappingDaoImpl implements RecordTagMappingDao {
     }
 
     @Override
+    public void batchDeleteRecordTagMapping(Long recordId) {
+        recordTagMappingMapper.batchDeleteRecordTagMapping(recordId);
+    }
+
+    @Override
     public List<Tag> getTagsByRecordId(Long recordId) {
         return recordTagMappingMapper.getTagsByRecordId(recordId);
     }

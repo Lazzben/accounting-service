@@ -84,7 +84,7 @@ public class RecordController {
     }
 
     /**
-     * @api {get} /record/:id 查询记录
+     * @api {get} /record/:id 获取记录
      * @apiName getRecordById
      * @apiGroup Record
      * @apiHeader {String} Content-Type application/json
@@ -128,9 +128,84 @@ public class RecordController {
         return recordC2SConverter.convert(recordManager.getRecordByRecordId(recordId));
     }
 
+    /**
+     * @api {put} /record/:id 更新记录
+     * @apiName updateRecord
+     * @apiGroup Record
+     * @apiParam id recordId
+     * @apiHeader {String} Accept application/json
+     * @apiHeader {String} Content-Type application/json
+     * @apiBody {Long} [userId] 用户id
+     * @apiBody {BigDecimal} [amount] 金额
+     * @apiBody {String} [category] 支出或收入
+     * @apiBody {String} [note] 备注
+     * @apiBody {List} [tags] 标签
+     * @apiParamExample {json} Request-Example:
+     * {
+     * "userId": 1,
+     * "amount": 107,
+     * "note": "买衣服",
+     * "category": "income",
+     * "tags": [
+     * {
+     * "id": 3
+     * },
+     * {
+     * "id": 1
+     * }
+     * ]
+     * }
+     * @apiSuccessExample Success-Response:
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "amount": 107.00,
+     * "note": "买衣服",
+     * "category": "income",
+     * "tags": [
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "shopping"
+     * },
+     * {
+     * "id": 3,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "read"
+     * }
+     * ]
+     * }
+     * @apiError 400 Bad Request userId非法，tags非法，amount非法，category非法
+     * @apiError 404 Not Found 该record未找到
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "INVALID_PARAMETER",
+     * "message": "some tags do not exits"
+     * }
+     */
     @PutMapping(path = "/{id}", produces = "application/json", consumes = "application/json")
     public Record updateRecord(@PathVariable("id") Long recordId, @RequestBody Record record) {
-        return null;
+        if (recordId == null || recordId <= 0) {
+            throw new InvalidParameterException("recordId is null or invalid");
+        }
+        checkAndCleanUpdateRecord(record);
+        val recordCommon = recordC2SConverter.reverse().convert(record);
+        return recordC2SConverter.convert(recordManager.updateRecord(recordId, recordCommon));
+    }
+
+    private void checkAndCleanUpdateRecord(Record record) {
+        if (record.getAmount() != null && record.getAmount().doubleValue() <= 0) {
+            throw new InvalidParameterException("Mount is invalid");
+        }
+        if (record.getCategory() != null &&
+                !(record.getCategory().equals("outcome") || record.getCategory().equals("income"))) {
+            throw new InvalidParameterException("Category is invalid");
+        }
+        record.setId(null);
+        record.setUserId(null);
     }
 
     private void checkRecord(Record record) {

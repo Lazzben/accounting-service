@@ -7,5 +7,7 @@ import java.util.List;
 public interface RecordTagMappingDao {
     void batchInsertRecordTagMapping(List<Tag> tags, Long id);
 
+    void batchDeleteRecordTagMapping(Long recordId);
+
     List<Tag> getTagsByRecordId(Long recordId);
 }

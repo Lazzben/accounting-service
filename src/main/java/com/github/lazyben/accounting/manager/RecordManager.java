@@ -6,4 +6,6 @@ public interface RecordManager {
     Record createRecord(Record record);
 
     Record getRecordByRecordId(Long recordId);
+
+    Record updateRecord(Long recordId, Record record);
 }
