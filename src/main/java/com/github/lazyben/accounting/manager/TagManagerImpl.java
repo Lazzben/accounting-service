@@ -1,9 +1,11 @@
 package com.github.lazyben.accounting.manager;
 
 import com.github.lazyben.accounting.converter.p2c.TagP2CConverter;
+import com.github.lazyben.accounting.dao.TagDao;
 import com.github.lazyben.accounting.dao.mapper.TagMapper;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
+import com.github.lazyben.accounting.model.PagedResponse;
 import com.github.lazyben.accounting.model.Status;
 import com.github.lazyben.accounting.model.common.Tag;
 import lombok.val;
@@ -11,16 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TagManagerImpl implements TagManager {
+    private final TagDao tagDao;
     private final TagMapper tagMapper;
     private final UserInfoManager userInfoManager;
     private final TagP2CConverter tagP2CConverter;
 
     @Autowired
-    public TagManagerImpl(TagMapper tagMapper, UserInfoManager userInfoManager, TagP2CConverter tagP2CConverter) {
+    public TagManagerImpl(TagDao tagDao, TagMapper tagMapper, UserInfoManager userInfoManager, TagP2CConverter tagP2CConverter) {
+        this.tagDao = tagDao;
         this.tagMapper = tagMapper;
         this.userInfoManager = userInfoManager;
         this.tagP2CConverter = tagP2CConverter;
@@ -69,6 +75,30 @@ public class TagManagerImpl implements TagManager {
         return Optional.ofNullable(tagMapper.getTagById(id))
                 .map(tagP2CConverter::convert)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("tag %s not found", id)));
+    }
+
+    @Override
+    public PagedResponse<Tag> getTags(Long id, int pageNum, int pageSize) {
+        int count = tagDao.getTagsCount(id);
+        int biggestPageNum = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
+        if (pageNum > biggestPageNum) {
+            throw new InvalidParameterException(
+                    String.format("Max pageNum is %s, which is smaller than %s.Total tags %s",
+                            biggestPageNum, pageNum, count));
+        }
+        int offset = (pageNum - 1) * pageSize;
+        val tagsPersistence = tagDao.getTags(id, offset, pageSize);
+        val tagsCommon = new ArrayList<Tag>();
+        tagP2CConverter.convertAll(tagsPersistence)
+                .forEach(tagsCommon::add);
+        return PagedResponse.<Tag>builder()
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .totalPages(biggestPageNum)
+                .totalElementSize(count)
+                .hasNextPage(pageNum != biggestPageNum)
+                .data(tagsCommon)
+                .build();
     }
 
     @Override

@@ -1,9 +1,14 @@
 package com.github.lazyben.accounting.controller;
 
 import com.github.lazyben.accounting.converter.c2s.TagC2SConverter;
+import com.github.lazyben.accounting.converter.c2s.TagPagedResponseC2SConverter;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.manager.TagManager;
+import com.github.lazyben.accounting.manager.UserInfoManager;
+import com.github.lazyben.accounting.model.PagedResponse;
 import com.github.lazyben.accounting.model.service.Tag;
+import lombok.val;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,11 +17,18 @@ import org.springframework.web.bind.annotation.*;
 public class TagController {
     private final TagManager tagManager;
     private final TagC2SConverter tagC2SConverter;
+    private final UserInfoManager userInfoManager;
+    private final TagPagedResponseC2SConverter pagedResponseC2SConverter;
 
     @Autowired
-    public TagController(TagManager tagManager, TagC2SConverter tagC2SConverter) {
+    public TagController(TagManager tagManager,
+                         TagC2SConverter tagC2SConverter,
+                         UserInfoManager userInfoManager,
+                         TagPagedResponseC2SConverter pagedResponseC2SConverter) {
         this.tagManager = tagManager;
         this.tagC2SConverter = tagC2SConverter;
+        this.userInfoManager = userInfoManager;
+        this.pagedResponseC2SConverter = pagedResponseC2SConverter;
     }
 
     /**
@@ -99,7 +111,7 @@ public class TagController {
     }
 
     /**
-     * @api {get} /tag/:id 获取标签
+     * @api {get} /tag/:id 根据id获取标签
      * @apiGroup Tag
      * @apiName getTagById
      * @apiHeader {String} Content-Type application/json
@@ -126,5 +138,53 @@ public class TagController {
             throw new InvalidParameterException("The tagId is empty or invalid");
         }
         return tagC2SConverter.convert(tagManager.getTagById(tagId));
+    }
+
+    /**
+     * @api {get} /tag 分页获取标签
+     * @apiGroup Tag
+     * @apiName getTags
+     * @apiHeader {String} Content-Type application/json
+     * @apiQuery {int} pageNum 页码
+     * @apiQuery {int} pageSize 页大小
+     * @apiSuccessExample {json} Success-Response:
+     * {
+     * "totalPages": 2,
+     * "totalElementSize": 3,
+     * "pageNum": 1,
+     * "pageSize": 2,
+     * "hasNextPage": true,
+     * "data": [
+     * {
+     * "id": 1,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "shopping"
+     * },
+     * {
+     * "id": 2,
+     * "userId": 1,
+     * "status": "ENABLE",
+     * "description": "house"
+     * }
+     * ]
+     * }
+     * @apiError 400 Bad Request 页码非法，页大小非法
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "INVALID_PARAMETER",
+     * "message": "Max pageNum is 2, which is smaller than 5.Total tags 3"
+     * }
+     */
+    @GetMapping(produces = "application/json")
+    public PagedResponse<Tag> getTags(@RequestParam("pageNum") int pageNum,
+                                      @RequestParam("pageSize") int pageSize) {
+        if (pageNum <= 0 || pageSize <= 0) {
+            throw new InvalidParameterException("PageNum or pageSize is invalid");
+        }
+        val username = (String) SecurityUtils.getSubject().getPrincipal();
+        val user = userInfoManager.getUserInfoByUsername(username);
+        return pagedResponseC2SConverter.convert(tagManager.getTags(user.getId(), pageNum, pageSize));
     }
 }

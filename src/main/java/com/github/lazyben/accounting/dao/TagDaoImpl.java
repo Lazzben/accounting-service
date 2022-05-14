@@ -25,4 +25,14 @@ public class TagDaoImpl implements TagDao {
         log.debug("getTagListByTagIds {}", tags);
         return tags;
     }
+
+    @Override
+    public List<Tag> getTags(Long id, int pageNum, int pageSize) {
+        return tagMapper.getTags(id, pageNum, pageSize);
+    }
+
+    @Override
+    public int getTagsCount(Long id) {
+        return tagMapper.getTagsCount(id);
+    }
 }

@@ -26,4 +26,11 @@ public interface TagMapper {
 
     @SelectProvider(type = TagSqlProvider.class, method = "getTagListByIds")
     List<Tag> getTagListByTagIds(List<Long> ids);
+
+    @Select("SELECT id, user_id, description, status, create_time, update_time " +
+            "from tag where user_id=#{id} order by user_id LIMIT #{offset},#{pageSize}")
+    List<Tag> getTags(@Param("id") Long id, @Param("offset") int offset, @Param("pageSize") int pageSize);
+
+    @Select("SELECT COUNT(*) from tag where user_id=#{id}")
+    int getTagsCount(Long id);
 }
