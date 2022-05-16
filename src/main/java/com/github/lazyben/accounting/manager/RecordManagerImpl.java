@@ -6,12 +6,14 @@ import com.github.lazyben.accounting.dao.RecordTagMappingDao;
 import com.github.lazyben.accounting.dao.TagDao;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.exception.ResourceNotFoundException;
+import com.github.lazyben.accounting.model.PagedResponse;
 import com.github.lazyben.accounting.model.common.Record;
 import com.github.lazyben.accounting.model.common.Tag;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,6 +78,36 @@ public class RecordManagerImpl implements RecordManager {
         val tags = recordTagMappingDao.getTagsByRecordId(newRecord.getId());
         newRecord.setTags(tags);
         return recordP2CConverter.convert(newRecord);
+    }
+
+    @Override
+    public PagedResponse<Record> getRecords(Long userId, int pageNum, int pageSize) {
+        val count = recordDao.getRecordsCount(userId);
+        val biggestPageNum = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
+
+        if (pageNum > biggestPageNum) {
+            throw new InvalidParameterException(
+                    String.format("Max pageNum is %s, which is smaller than %s.Total tags %s",
+                            biggestPageNum, pageNum, count));
+        }
+        int offset = (pageNum - 1) * pageSize;
+        val recordsPersistence = recordDao.getRecords(userId, offset, pageSize);
+        recordsPersistence.forEach((record) -> {
+            val tags = Optional.ofNullable(recordTagMappingDao.getTagsByRecordId(record.getId()))
+                    .orElseThrow(() -> new ResourceNotFoundException(String.format("no tags matched for record %s", record.getId())));
+            record.setTags(tagDao.getTagListByTagIds(getTagsIds(tags)));
+        });
+        val recordsCommon = new ArrayList<Record>();
+        recordP2CConverter.convertAll(recordsPersistence).forEach(recordsCommon::add);
+        return PagedResponse.<Record>builder()
+                .data(recordsCommon)
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .totalPages(biggestPageNum)
+                .totalElementSize(count)
+                .hasNextPage(pageNum != biggestPageNum)
+                .build();
+
     }
 
     private void checkTagsAndUpdateRecordsTags(com.github.lazyben.accounting.model.persistence.Record recordToBeUpdated,

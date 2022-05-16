@@ -9,3 +9,7 @@ create table `record` (
     `update_time` datetime DEFAULT NULL on update CURRENT_TIMESTAMP,
     PRIMARY KEY `pk_id` (`id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into `record` (user_id, amount, note, category, status, create_time) values (1, '16.10', '买房', 0, 1, now());
+insert into `record` (user_id, amount, note, category, status, create_time) values (1, '20.10', '购物和买书', 0, 1, now());
+insert into `record` (user_id, amount, note, category, status, create_time) values (1, '50.10', '买书', 0, 1, now());

@@ -1,10 +1,14 @@
 package com.github.lazyben.accounting.controller;
 
 import com.github.lazyben.accounting.converter.c2s.RecordC2SConverter;
+import com.github.lazyben.accounting.converter.c2s.RecordPagedResponseC2SConverter;
 import com.github.lazyben.accounting.exception.InvalidParameterException;
 import com.github.lazyben.accounting.manager.RecordManager;
+import com.github.lazyben.accounting.manager.UserInfoManager;
+import com.github.lazyben.accounting.model.PagedResponse;
 import com.github.lazyben.accounting.model.service.Record;
 import lombok.val;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +17,18 @@ import org.springframework.web.bind.annotation.*;
 public class RecordController {
     private final RecordManager recordManager;
     private final RecordC2SConverter recordC2SConverter;
+    private final UserInfoManager userInfoManager;
+    private final RecordPagedResponseC2SConverter recordPagedResponseC2SConverter;
 
     @Autowired
-    public RecordController(RecordManager recordManager, RecordC2SConverter recordC2SConverter) {
+    public RecordController(RecordManager recordManager,
+                            RecordC2SConverter recordC2SConverter,
+                            UserInfoManager userInfoManager,
+                            RecordPagedResponseC2SConverter recordPagedResponseC2SConverter) {
         this.recordManager = recordManager;
         this.recordC2SConverter = recordC2SConverter;
+        this.userInfoManager = userInfoManager;
+        this.recordPagedResponseC2SConverter = recordPagedResponseC2SConverter;
     }
 
     /**
@@ -194,6 +205,78 @@ public class RecordController {
         checkAndCleanUpdateRecord(record);
         val recordCommon = recordC2SConverter.reverse().convert(record);
         return recordC2SConverter.convert(recordManager.updateRecord(recordId, recordCommon));
+    }
+
+    /**
+     * @api {get} /record 分页获取记录
+     * @apiName getRecords
+     * @apiGroup Record
+     * @apiHeader {String} Content-Type application/json
+     * @apiQuery {int} pageNum 页码
+     * @apiQuery {int} pageSize 页大小
+     * @apiSuccessExample Success-Response:
+     * {
+     *     "totalPages": 0,
+     *     "totalElementSize": 3,
+     *     "pageNum": 1,
+     *     "pageSize": 2,
+     *     "hasNextPage": true,
+     *     "data": [
+     *         {
+     *             "id": 1,
+     *             "userId": 1,
+     *             "amount": 16.10,
+     *             "note": "买房",
+     *             "category": "outcome",
+     *             "tags": [
+     *                 {
+     *                     "id": 2,
+     *                     "userId": 1,
+     *                     "status": "ENABLE",
+     *                     "description": "house"
+     *                 }
+     *             ]
+     *         },
+     *         {
+     *             "id": 2,
+     *             "userId": 1,
+     *             "amount": 20.10,
+     *             "note": "购物和买书",
+     *             "category": "outcome",
+     *             "tags": [
+     *                 {
+     *                     "id": 1,
+     *                     "userId": 1,
+     *                     "status": "ENABLE",
+     *                     "description": "shopping"
+     *                 },
+     *                 {
+     *                     "id": 3,
+     *                     "userId": 1,
+     *                     "status": "ENABLE",
+     *                     "description": "read"
+     *                 }
+     *             ]
+     *         }
+     *     ]
+     * }
+     * @apiError 400 Bad Request 页码非法，页大小非法
+     * @apiError 401 Unauthorized 用户未登录
+     * @apiErrorExample {json} Error-Response:
+     * {
+     * "bizErrorCode": "INVALID_PARAMETER",
+     * "message": "Max pageNum is 2, which is smaller than 5.Total tags 3"
+     * }
+     */
+    @GetMapping(produces = "application/json")
+    public PagedResponse<Record> getRecords(@RequestParam("pageNum") int pageNum,
+                                            @RequestParam("pageSize") int pageSize) {
+        if (pageNum <= 0 || pageSize <= 0) {
+            throw new InvalidParameterException("pageNum or pageSize is invalid");
+        }
+        val username = (String) SecurityUtils.getSubject().getPrincipal();
+        val user = userInfoManager.getUserInfoByUsername(username);
+        return recordPagedResponseC2SConverter.convert(recordManager.getRecords(user.getId(), pageNum, pageSize));
     }
 
     private void checkAndCleanUpdateRecord(Record record) {

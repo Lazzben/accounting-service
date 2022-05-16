@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -34,6 +35,16 @@ public class RecordDaoImpl implements RecordDao {
     @Override
     public void updateRecord(Record record) {
         recordMapper.updateRecord(record);
+    }
+
+    @Override
+    public int getRecordsCount(Long id) {
+        return recordMapper.getRecordCount(id);
+    }
+
+    @Override
+    public List<Record> getRecords(Long id, int offset, int pageSize) {
+        return recordMapper.getRecords(id, offset, pageSize);
     }
 
 }
