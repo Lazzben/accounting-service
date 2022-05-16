@@ -12,6 +12,7 @@ import com.github.lazyben.accounting.model.common.Tag;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class RecordManagerImpl implements RecordManager {
     }
 
     @Override
+    @Transactional
     public Record createRecord(Record record) {
         val newRecord = recordP2CConverter.reverse().convert(record);
         val tagsId = record.getTags().stream().map(Tag::getId).collect(Collectors.toList());
@@ -59,6 +61,7 @@ public class RecordManagerImpl implements RecordManager {
     }
 
     @Override
+    @Transactional
     public Record updateRecord(Long recordId, Record record) {
         // 判断recordId对应的record是否存在，并获取老的record。
         val oldRecord = recordP2CConverter.reverse().convert(getRecordByRecordId(recordId));
