@@ -11,6 +11,8 @@ import com.github.lazyben.accounting.model.common.Record;
 import com.github.lazyben.accounting.model.common.Tag;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +53,7 @@ public class RecordManagerImpl implements RecordManager {
     }
 
     @Override
+    @Cacheable(value = "record", key = "#recordId")
     public Record getRecordByRecordId(Long recordId) {
         val record = Optional.ofNullable(recordDao.getRecordByRecordId(recordId))
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("record %s is not found", recordId)));
@@ -62,6 +65,7 @@ public class RecordManagerImpl implements RecordManager {
 
     @Override
     @Transactional
+    @CacheEvict(value = "record", key = "#recordId")
     public Record updateRecord(Long recordId, Record record) {
         // 判断recordId对应的record是否存在，并获取老的record。
         val oldRecord = recordP2CConverter.reverse().convert(getRecordByRecordId(recordId));

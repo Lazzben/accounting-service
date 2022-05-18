@@ -14,7 +14,7 @@ public interface UserInfoMapper {
     @Select("SELECT id, username, password, salt, create_time, update_time from userinfo where username =#{username}")
     UserInfo getUserInfoByUsername(@Param("username") String username);
 
-//    @Options(useGeneratedKeys = true, keyProperty = "id") // 这段注释可以返回自增的id
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Select("INSERT into userinfo(username, password, salt, create_time) "
             + "VALUES (#{username}, #{password}, #{salt}, #{createTime})")
     void createNewUser(UserInfo newUserInfo);

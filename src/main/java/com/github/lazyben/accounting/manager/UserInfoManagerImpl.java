@@ -11,6 +11,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -30,6 +32,8 @@ public class UserInfoManagerImpl implements UserInfoManager {
         this.userInfoP2CConverter = userInfoP2CConverter;
     }
 
+    @Override
+    @Cacheable(value = "userinfo", key = "#id")
     public UserInfo getUserInfoById(long id) {
         return Optional.ofNullable(userInfoMapper.getUserInfoById(id))
                 .map(userInfoP2CConverter::convert)
@@ -48,6 +52,7 @@ public class UserInfoManagerImpl implements UserInfoManager {
     }
 
     @Override
+    @Cacheable(value = "userinfo_by_name", key = "#username")
     public UserInfo getUserInfoByUsername(String username) {
         return Optional.ofNullable(userInfoMapper.getUserInfoByUsername(username))
                 .map(userInfoP2CConverter::convert)
@@ -71,6 +76,7 @@ public class UserInfoManagerImpl implements UserInfoManager {
                 .build();
 
         userInfoMapper.createNewUser(newUserInfo);
+        log.debug("create new user: {}", newUserInfo);
 
         return userInfoP2CConverter.convert(newUserInfo);
     }
