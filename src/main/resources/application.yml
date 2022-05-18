@@ -4,6 +4,8 @@ spring:
     username: root
     password: bigben
     driverClassName: com.mysql.cj.jdbc.Driver
+  cache:
+    type: redis
 
 logging:
   level:
@@ -12,3 +14,9 @@ logging:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+
+redis:
+  database: 0
+  host: localhost
+  port: 6379
+  time-to-live: 5000

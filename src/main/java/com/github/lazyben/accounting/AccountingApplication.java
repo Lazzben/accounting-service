@@ -6,7 +6,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
-@EnableCaching
 @SpringBootApplication
 public class AccountingApplication {
     public static void main(String[] args) {
