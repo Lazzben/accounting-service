@@ -3,8 +3,6 @@ package com.github.lazyben.accounting.manager;
 import com.github.lazyben.accounting.model.PagedResponse;
 import com.github.lazyben.accounting.model.common.Tag;
 
-import java.util.List;
-
 public interface TagManager {
     Tag createTag(com.github.lazyben.accounting.model.service.Tag tag);
 

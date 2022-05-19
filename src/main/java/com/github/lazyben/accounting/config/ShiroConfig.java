@@ -8,9 +8,14 @@ import lombok.val;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,10 +26,21 @@ public class ShiroConfig {
     private static final String HASH_ALGORITHM_NAME = "SHA-256";
 
     @Bean
-    public SecurityManager securityManager(Realm realm) {
+    public SessionsSecurityManager securityManager(Realm realm,
+                                                   RedisCacheManager redisCacheManager,
+                                                   SessionManager sessionManager) {
         val securityManager = new DefaultWebSecurityManager(realm);
         SecurityUtils.setSecurityManager(securityManager);
+        securityManager.setCacheManager(redisCacheManager);
+        securityManager.setSessionManager(sessionManager);
         return securityManager;
+    }
+
+    @Bean
+    public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+        sessionManager.setSessionDAO(redisSessionDAO);
+        return sessionManager;
     }
 
     @Bean
